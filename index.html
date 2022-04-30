@@ -1,90 +1,86 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
-</head>
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #add8e6;">
-  <a class="navbar-brand">
-    <img src="https://www.freeiconspng.com/thumbs/airplane-icon-png/plane-icon-png-images--pictures--becuo-8.png" width="30" height="30" class="d-inline-block align-top" alt="">
-    TransferSystem
-  </a>
-</nav>
-  
-  <center><h1 style="margin-top:2%">Utazási terv</h1></center>
-  <div class="p-4 mb-3 bg-light rounded">
- <div class="container">
-  <form>
-  <div class="form-group">
-    <label for="">Honnan? </label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Hova? ">
-  </div>
-  <div class="form-group">
-    <label for="">Hova? </label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Hova? ">
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Busz</label>
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Hajó</label>
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Repülőgép</label>
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Vonat</label>
-  </div>
-<center><button type="submit" class="btn btn-primary" style="margin-top:1%">Keresés</button><center>
-</form>
-</div>
-</div>
-
-
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-	<a class="nav-item nav-link active" href="available.html">Elérhető könyvek</a>
-	<a class="nav-item nav-link" href="borrowed.html">Kölcsönzött könyvek</a>
-     <a class="nav-item nav-link" href="borrowing.html">Könyv kölcsönzés</a>
-     <a class="nav-item nav-link" href="add.html">Könyv hozzáadása</a>
-    </div>
-  </div>
-
-<center><h1 style="padding:1%" >Elérhető könyvek: </h1></center>
-<div class="container">
-<table class="table datatable">
-			<thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Szerző</th>
-                    <th>Cím</th>
-                    <th>Oldalszám</th>
-                    <th>Megjelenés</th>
-                </tr>
-            </thead>
-			<tbody>
-			<tr th:if="${#lists.isEmpty(books)}">
-				<td colspan="5"><h3>Nincs elérhető útvonal.<h3></td>
-			</tr>
-            <tr th:each="book : ${books}">
-					<td th:text="${book.id}"></td>
-					<td th:text="${book.author}"></td>					
-					<td th:text="${book.title}"></td>
-					<td th:text="${book.totalPages}"></td>
-					<td th:text="${book.publishedDate}"></td>
-			</tr>
-            </tbody>
-</table>
-</body>
+	<head><meta charset="UTF-8">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+	</head>
+	<body>
+	<center><h1 style="margin-top:2%">Utazási terv</h1></center>
+		<div class="container">
+			<div class="p-4 mb-3 bg-light rounded">
+				<form action="#" method="POST" th:object="${searchingData}" th:action="@{/index}">
+					<div class="form-group">
+						<label>Honnan? </label>
+						<input required type="text" class="form-control" id="departure" placeholder="Honan?">
+					</div>
+					<div class="form-group">
+						<label>Hova? </label>
+						<input required type="text" class="form-control" id="arrival" placeholder="Hova?">
+					</div>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="bus">
+						<label class="form-check-label" for="exampleCheck1">Busz</label>
+					</div>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="ship">
+						<label class="form-check-label" for="exampleCheck1">Hajó</label>
+					</div>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="plane">
+						<label class="form-check-label" for="exampleCheck1">Repülőgép</label>
+					</div>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="train">
+						<label class="form-check-label" for="exampleCheck1">Vonat</label>
+					</div>
+					<center><button type="submit" class="btn btn-primary" style="margin-top:1%">Keresés</button></center>
+				</form>
+			</div>
+		</div>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<div class="navbar-nav">
+				<a class="nav-item nav-link active" href="available.html">Elérhető könyvek</a>
+				<a class="nav-item nav-link" href="borrowed.html">Kölcsönzött könyvek</a>
+				<a class="nav-item nav-link" href="borrowing.html">Könyv kölcsönzés</a>
+				<a class="nav-item nav-link" href="add.html">Könyv hozzáadása</a>
+			</div>
+		</div>
+		<div class="container">
+			<div class="p-4 mb-3 bg-light rounded">
+			<h1 style="padding:1%" >Útvonalak: </h1>
+				<table class="table datatable">
+					<thead>
+						<tr>
+							<th>Indulási pont</th>
+							<th>Érkezési pont</th>
+							<th>Érintett városok</th>
+							<th>Busz</th>
+							<th>Hajó</th>
+							<th>Repülőgép</th>
+							<th>Vonat</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${#lists.isEmpty(routes)}">
+							<td colspan="5"><h3>Nincs elérhető útvonal.<h3></td>
+						</tr>
+						<tr th:each="route : ${routes}">
+							<td th:text="${route.departure}"></td>
+							<td th:text="${route.arrival}"></td>					
+							<td th:text="${route.via}"></td>
+							<td th:text="${route.bus}"></td>
+							<td th:text="${route.ship}"></td>
+							<td th:text="${route.plane}"></td>
+							<td th:text="${route.train}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
 </html>
-<table>
+
 
 
