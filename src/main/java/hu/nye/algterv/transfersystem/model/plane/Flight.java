@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,12 +22,12 @@ import lombok.Setter;
 public class Flight {
     
     @Id
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "airport_id_1", referencedColumnName = "airportId")
     private Airport airportId1;
 
     @Id
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "airport_id_2", referencedColumnName = "airportId")
     private Airport airportId2;
 
