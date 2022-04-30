@@ -1,4 +1,4 @@
-package hu.nye.algterv.transfersystem.model;
+package hu.nye.algterv.transfersystem.model.bus;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,18 +10,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "airports")
+@Table(name = "bus_stations")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Airports {
+@AllArgsConstructor
+public class BusStation {
+    
     @Id
-    private Long airportId;
-    private String airportInternationalCode;
-    private String airportName;
+    private Long busStationId;
+    private String busStationName;
     private Long settlementId;
-    private String GPS1;
-    private String GPS2;
-
+    private String gps1;
+    private String gps2;
 }
