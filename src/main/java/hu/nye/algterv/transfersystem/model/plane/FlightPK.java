@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class FlightPK implements Serializable{
     
-    private Long airportId1;
-    private Long airportId2;
-    
+    private Integer airportId1;
+    private Integer airportId2;
+
 }
