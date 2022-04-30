@@ -1,7 +1,6 @@
 package hu.nye.algterv.transfersystem.model.ship;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
