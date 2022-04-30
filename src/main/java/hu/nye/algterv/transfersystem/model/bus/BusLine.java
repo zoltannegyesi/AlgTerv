@@ -1,0 +1,40 @@
+package hu.nye.algterv.transfersystem.model.bus;
+
+import java.time.LocalTime;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "bus_lines")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@IdClass(BusLinePK.class)
+public class BusLine {
+    
+    @Id
+    @OneToOne
+    @JoinColumn(name = "bus_station_id_1", referencedColumnName = "busStationId")
+    private BusStation busStationId1;
+
+    @Id
+    @OneToOne
+    @JoinColumn(name = "bus_station_id_2", referencedColumnName = "busStationId")
+    private BusStation busStationId2;
+
+    private Double travelDistance;
+
+    private LocalTime travelTime;
+
+}
