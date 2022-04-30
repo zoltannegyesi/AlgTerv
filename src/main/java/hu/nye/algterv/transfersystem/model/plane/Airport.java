@@ -6,9 +6,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import hu.nye.algterv.transfersystem.model.region.Settlement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +33,8 @@ public class Airport {
     private String airportName;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Flight settlementId;
+    @JoinColumn(name = "settlement_id", referencedColumnName = "settlementId")
+    private Settlement settlementId;
 
     private String gps1;
 
