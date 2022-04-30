@@ -55,7 +55,7 @@
 					</thead>
 					<tbody>
 						<tr th:if="${#lists.isEmpty(routes)}">
-							<td colspan="5"><h3>Nincs elérhető útvonal.<h3></td>
+							<td colspan="7"><h3>Nincs elérhető útvonal.<h3></td>
 						</tr>
 						<tr th:each="route : ${routes}">
 							<td th:text="${route.departure}"></td>
