@@ -1,13 +1,9 @@
 package hu.nye.algterv.transfersystem.model;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,24 +12,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "countries")
+@Table(name = "geo_regions")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Country {
+public class GeoRegion {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer countryId;
+    private Integer regionId;
 
-    private String countryName;
+    private String regionName;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "region_id", referencedColumnName = "regionId")
-    private GeoRegion regionId;
-
-    private Integer settlementNumber;
+    private Integer countryNumber;
 
     private Integer airportNumber;
 
