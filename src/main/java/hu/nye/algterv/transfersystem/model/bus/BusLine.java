@@ -1,5 +1,7 @@
 package hu.nye.algterv.transfersystem.model.bus;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -33,6 +35,6 @@ public class BusLine {
 
     private Double travelDistance;
 
-    private Long travelTime;
+    private LocalTime travelTime;
 
 }
