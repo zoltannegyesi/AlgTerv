@@ -1,4 +1,4 @@
-package hu.nye.algterv.transfersystem.model.regions;
+package hu.nye.algterv.transfersystem.model.region;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
