@@ -1,4 +1,4 @@
-package hu.nye.algterv.transfersystem.model;
+package hu.nye.algterv.transfersystem.model.region;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
