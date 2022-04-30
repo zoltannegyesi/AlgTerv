@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,12 +23,12 @@ import lombok.Setter;
 public class BusLine {
     
     @Id
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "bus_station_id_1", referencedColumnName = "busStationId")
     private BusStation busStationId1;
 
     @Id
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "bus_station_id_2", referencedColumnName = "busStationId")
     private BusStation busStationId2;
 
