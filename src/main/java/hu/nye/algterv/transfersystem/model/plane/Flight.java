@@ -11,11 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "flights")
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(FlightPK.class)
@@ -33,5 +35,5 @@ public class Flight {
 
     private Double travelDistance;
 
-    private Long travelTime;
+    private Integer travelTime;
 }
