@@ -1,42 +1,35 @@
 package hu.nye.algterv.transfersystem.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hu.nye.algterv.transfersystem.model.data.CountryData;
-import hu.nye.algterv.transfersystem.model.plane.Airport;
 import hu.nye.algterv.transfersystem.model.plane.Flight;
-import hu.nye.algterv.transfersystem.model.region.Settlement;
-import hu.nye.algterv.transfersystem.repository.AirportRepository;
 import hu.nye.algterv.transfersystem.repository.FlightRepository;
-import hu.nye.algterv.transfersystem.repository.SettlementRepository;
 
 @Service
 public class CountryService {
     
 
-   private final SettlementRepository settlementRepository;
    private final FlightRepository flightRepository;
-   private final AirportRepository airportRepository;
    
    @Autowired
-   public CountryService(SettlementRepository settlementRepository, FlightRepository flightRepository, AirportRepository airportRepository) {
-       this.settlementRepository = settlementRepository;
+   public CountryService(FlightRepository flightRepository) {
        this.flightRepository = flightRepository;
-       this.airportRepository = airportRepository;
    }
 
-    public List<Settlement> findAll() {
-       return this.settlementRepository.findAll();
-    }
+   public Integer getStartFlightId(String settlementName) {
+       return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId1().getAirportId();
+   }
 
-    public List<Flight> findAllFlights() {
-        return this.flightRepository.findAll();
-    } 
+   public Integer getFinishFlightId(String settlementName) {
+    return this.flightRepository.findAll().stream().filter(f->f.getAirportId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId2().getAirportId();
+}
+
+
 
     public CountryData findRoute(Integer from, Integer to) {
         checkFlights(from, to);
@@ -68,8 +61,6 @@ public class CountryService {
         tempAllFlights.add(flight);
         if (flight.getAirportId2().getAirportId().equals(to)) {
             tempAllFlights.forEach(allFlights::add);
-            System.out.println("Megtalálva");
-            System.out.println(allFlights.get(0).getAirportId1().getAirportName() + "->" + allFlights.get(allFlights.size()-1).getAirportId2().getAirportName());
             return;
         } else {
             List<Flight> flights =  findFlightById1(flight.getAirportId2().getAirportId());

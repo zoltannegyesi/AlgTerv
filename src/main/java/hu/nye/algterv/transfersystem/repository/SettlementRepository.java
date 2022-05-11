@@ -8,4 +8,6 @@ import hu.nye.algterv.transfersystem.model.region.Settlement;
 
 public interface SettlementRepository extends CrudRepository<Settlement, Integer> {
     List<Settlement> findAll();
+
+    Settlement findBySettlementName(String settlementName);
 }
