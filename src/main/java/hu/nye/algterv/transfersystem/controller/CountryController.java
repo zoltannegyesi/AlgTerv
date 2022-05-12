@@ -21,9 +21,15 @@ public class CountryController {
     }
 
     @GetMapping
-    public CountryData findByAirportId(@RequestParam("from") String from, @RequestParam("to") String to) {
+    public String getCountry() {
+        return "country/index";
+    }
+
+    @GetMapping(value = "/get")
+    public String findByAirportId(@RequestParam("from") String from, @RequestParam("to") String to) {
         Integer fromId = this.service.getStartFlightId(from);
         Integer toId = this.service.getFinishFlightId(to);
-        return this.service.findRoute(fromId, toId);
+        CountryData result = this.service.findRoute(fromId, toId);
+        return "country/index";
     }
 }
