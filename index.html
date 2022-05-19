@@ -1,77 +1,47 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head><meta charset="UTF-8">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+		<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>	
 	</head>
 	<body>
-	<center>
-		<h1 style="margin-top:2%">Utazási terv</h1>
-	</center>
-		<div class="container">
+		<nav class="navbar navbar-dark bg-primary">
+			<a th:href="@{'country/index'}" class="navbar-brand mb-0 h1">Átszállási terv</a>	
+		</nav>
+		<div class="container" style="margin-top:5%; margin-bottom:5%">
 			<div class="p-4 mb-3 bg-light rounded">
-				<form action="#" method="POST" th:object="${searchingData}" th:action="@{/index}">
+				<form action="#" method="POST" th:object="${searchingData}" th:action="@{/routes/list}">
 					<div class="form-group">
 						<label>Honnan? </label>
-						<input required type="text" class="form-control" id="departure" placeholder="Honan?" th:field="*{departure}">
+						<input required type="text" name="departure" class="form-control" id="departure" placeholder="Honnan?">
 					</div>
 					<div class="form-group">
 						<label>Hova? </label>
-						<input required type="text" class="form-control" id="arrival" placeholder="Hova?"th:field="*{arrival}">
+						<input required type="text" class="form-control" id="arrival" name="arrival" placeholder="Hova?">
 					</div>
-					<div class="form-check">
-						<input type="checkbox" class="form-check-input" id="bus" th:checked="*{bus}">
-						<label class="form-check-label" for="exampleCheck1">Busz</label>
+					
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input" id="bus" name="bus" checked>
+						<label class="custom-control-label" for="bus">Busz</label>
 					</div>
-					<div class="form-check">
-						<input type="checkbox" class="form-check-input" id="ship" th:checked="*{ship}">
-						<label class="form-check-label" for="exampleCheck1">Hajó</label>
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input" id="ship" name="ship" checked>
+						<label class="custom-control-label" for="ship">Hajó</label>
 					</div>
-					<div class="form-check">
-						<input type="checkbox" class="form-check-input" id="plane" th:checked="*{plane}">
-						<label class="form-check-label" for="exampleCheck1">Repülőgép</label>
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input" id="plane" name="plane" checked>
+						<label class="custom-control-label" for="plane">Repülőgép</label>
 					</div>
-					<div class="form-check">
-						<input type="checkbox" class="form-check-input" id="train" th:checked="*{train}">
-						<label class="form-check-label" for="exampleCheck1">Vonat</label>
+					<div class="custom-control custom-switch">
+						<input type="checkbox" class="custom-control-input" id="train" name="train" checked>
+						<label class="custom-control-label" for="train">Vonat</label>
 					</div>
-					<button type="submit" class="btn btn-primary" style="margin-top:1%">Keresés</button>
+				
+					<button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:1%" th:onclick="|window.location.href='/routes/list'|">Keresés</button>
 				</form>
 			</div>
 		</div>
-		<div class="container" style="margin-top:2%">
-			<div class="p-4 mb-3 bg-light rounded">
-			<h1 style="padding:1%" >Útvonalak: </h1>
-				<table class="table datatable">
-					<thead>
-						<tr>
-							<th>Indulási pont</th>
-							<th>Érkezési pont</th>
-							<th>Érintett városok</th>
-							<th>Busz</th>
-							<th>Hajó</th>
-							<th>Repülőgép</th>
-							<th>Vonat</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:if="${#lists.isEmpty(routes)}">
-							<td colspan="7"><h3>Nincs elérhető útvonal.<h3></td>
-						</tr>
-						<tr th:each="route : ${routes}">
-							<td th:text="${route.departure}"></td>
-							<td th:text="${route.arrival}"></td>					
-							<td th:text="${route.via}"></td>
-							<td th:text="${route.bus}"></td>
-							<td th:text="${route.ship}"></td>
-							<td th:text="${route.plane}"></td>
-							<td th:text="${route.train}"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
+			<hr>
 	</body>
 </html>
-
-
-
