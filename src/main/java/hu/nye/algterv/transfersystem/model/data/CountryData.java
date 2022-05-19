@@ -3,9 +3,11 @@ package hu.nye.algterv.transfersystem.model.data;
 import hu.nye.algterv.transfersystem.model.plane.Flight;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CountryData {
     
     private String fromCountry;

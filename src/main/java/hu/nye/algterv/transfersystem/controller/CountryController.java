@@ -2,10 +2,15 @@ package hu.nye.algterv.transfersystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import hu.nye.algterv.transfersystem.model.SearchingData;
 import hu.nye.algterv.transfersystem.model.data.CountryData;
 import hu.nye.algterv.transfersystem.service.CountryService;
 
@@ -25,11 +30,18 @@ public class CountryController {
         return "country/index";
     }
 
-    @GetMapping(value = "/get")
-    public String findByAirportId(@RequestParam("from") String from, @RequestParam("to") String to) {
-        Integer fromId = this.service.getStartFlightId(from);
-        Integer toId = this.service.getFinishFlightId(to);
+    @PostMapping(value = "/list")
+    public String findByAirportId(@ModelAttribute("searchinData") SearchingData searchingData, Model model) {
+        Integer fromId = this.service.getStartFlightId(searchingData.getDeparture());
+        Integer toId = this.service.getFinishFlightId(searchingData.getArrival());
         CountryData result = this.service.findRoute(fromId, toId);
-        return "country/index";
+        model.addAttribute("countryData", result);
+        return "country/routes";
+    }
+
+    @GetMapping(value = "/list")
+    public String findAll(Model model, @ModelAttribute("countryData") CountryData countryData) {
+
+        return "country/routes";
     }
 }

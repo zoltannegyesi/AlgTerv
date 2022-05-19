@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
         <meta charset="UTF-8">
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	</head>
+		<link rel="stylesheet"
+		th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+  <script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>	</head>
 	<body>
 	<center>
 		<h1 style="margin-top:2%">Átszállási terv</h1>
@@ -14,8 +15,8 @@
 				<table class="table datatable">
 					<thead>
 						<tr>
-							<th>Indulási pont (város)</th>
-							<th>Érkezési pont (város)</th>
+							<th>Indulási pont (Ország)</th>
+							<th>Érkezési pont (Orszáh)</th>
 							<th>Átszállások száma</th>
 							<th>Utazási idő</th>
 							<th>Utazási távolság</th>
@@ -26,8 +27,8 @@
 							<td colspan="5"><h3>Nincs elérhető útvonal.</h3></td>
 						</tr>
 						<tr th:each="cd : ${countryData}">
-							<td th:text="${cd.fromCity}"></td>
-							<td th:text="${cd.toCity}"></td>					
+							<td th:text="${cd.fromCountry}"></td>
+							<td th:text="${cd.toCountry}"></td>					
 							<td th:text="${cd.transferCount}"></td>
 							<td th:text="${cd.time}"></td>
 							<td th:text="${cd.distance}"></td>
