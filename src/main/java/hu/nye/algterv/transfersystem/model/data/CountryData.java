@@ -20,8 +20,8 @@ public class CountryData {
     private List<TravelInfo> settlements;
 
     public CountryData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> settlements) {
-        this.fromCountry = from.getFromSettlement().getCountryId().getCountryName();
-        this.toCountry = to.getToSettlement().getCountryId().getCountryName();
+        this.fromCountry = from.getFromSettlement().getSettlementName();
+        this.toCountry = to.getToSettlement().getSettlementName();
         this.transferCount = transferCount;
         this.time = time;
         this.distance = distance;

@@ -1,5 +1,7 @@
 package hu.nye.algterv.transfersystem.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,8 @@ public class CountryRestController {
     }
 
     @GetMapping("/{id}")
-    public CountryData findByAirportId(@PathVariable("id") Integer id, @RequestParam("to") Integer to) {
-        return this.service.findRoute(id, to);
+    public List<CountryData> findByAirportId(@PathVariable("id") Integer id, @RequestParam("to") Integer to) {
+        //his.service.findRoute(id, to);
+        return null;
     }
 }

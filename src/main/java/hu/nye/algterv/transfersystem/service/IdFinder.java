@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
+import hu.nye.algterv.transfersystem.model.data.TransferIds;
 import hu.nye.algterv.transfersystem.repository.BusLineRepository;
 import hu.nye.algterv.transfersystem.repository.FlightRepository;
 import hu.nye.algterv.transfersystem.repository.ShipLineRepository;
@@ -30,79 +31,55 @@ public class IdFinder {
        this.shipLineRepository = shipLineRepository;
    }
 
-   public Integer getStartId(String settlementName, SearchOptions searchOptions) {
-    Integer id = null;
+   public TransferIds getStartId(String settlementName, SearchOptions searchOptions) {
+    TransferIds transferIds = new TransferIds();
     try {
-        if (!searchOptions.getIsPlane()) {
-            throw new NoSuchElementException();
-        }
-       id = getStartFlightId(settlementName);
-       return id;
+        transferIds.setAirportId(getStartFlightId(settlementName));
     } catch (NoSuchElementException e) {
-       try {
-        if (!searchOptions.getIsTrain()) {
-            throw new NoSuchElementException();
-        }
-           id = getStartTrainLineId(settlementName);
-           return id;
-       } catch (NoSuchElementException f) {
-           try {
-            if (!searchOptions.getIsBus()) {
-                throw new NoSuchElementException();
-            }
-               id = getStartBusLineId(settlementName);
-               return id;
-           } catch (NoSuchElementException g) {
-               try {
-                if (!searchOptions.getIsShip()) {
-                    throw new NoSuchElementException();
-                }
-                   id = getStartShipLineId(settlementName);
-                   return id;
-               } catch (NoSuchElementException h) {
-                   return id;
-               }
-           }
-       }
+       System.out.println("Nincsen ilyen reptér");
     }
+    try {
+        transferIds.setTrainStationId(getStartTrainLineId(settlementName));
+    } catch (NoSuchElementException e) {
+       System.out.println("Nincsen ilyen vasútállomás");
+    }
+    try {
+        transferIds.setBusStationId(getStartBusLineId(settlementName));
+    } catch (NoSuchElementException e) {
+       System.out.println("Nincsen ilyen buszállomás");
+    }
+    try {
+        transferIds.setShipStationId(getStartShipLineId(settlementName));
+    } catch (NoSuchElementException e) {
+       System.out.println("Nincsen ilyen hajóállomás");
+    }
+    return transferIds;
 }
  
-    public Integer getFinishId(String settlementName, SearchOptions searchOptions) {
-     Integer id = null;
-     try {
-         if (!searchOptions.getIsPlane()) {
-             throw new NoSuchElementException();
-         }
-        id = getFinishFlightId(settlementName);
-        return id;
-     } catch (NoSuchElementException e) {
+    public TransferIds getFinishId(String settlementName, SearchOptions searchOptions) {
+        TransferIds transferIds = new TransferIds();
         try {
-            if (!searchOptions.getIsTrain()) {
-                throw new NoSuchElementException();
-            }
-            id = getFinishTrainLineId(settlementName);
-            return id;
-        } catch (NoSuchElementException f) {
-            try {
-                if (!searchOptions.getIsBus()) {
-                    throw new NoSuchElementException();
-                }
-                id = getFinishBusLineId(settlementName);
-                return id;
-            } catch (NoSuchElementException g) {
-                try {
-                    if (!searchOptions.getIsShip()) {
-                        throw new NoSuchElementException();
-                    }
-                    id = getFinishShipLineId(settlementName);
-                    return id;
-                } catch (NoSuchElementException h) {
-                    return id;
-                }
-            }
+            transferIds.setAirportId(getFinishFlightId(settlementName));
+        } catch (NoSuchElementException e) {
+           System.out.println("Nincsen ilyen reptér");
         }
-     }
- }
+        try {
+            transferIds.setTrainStationId(getFinishTrainLineId(settlementName));
+        } catch (NoSuchElementException e) {
+           System.out.println("Nincsen ilyen vasútállomás");
+        }
+        try {
+            transferIds.setBusStationId(getFinishBusLineId(settlementName));
+        } catch (NoSuchElementException e) {
+           System.out.println("Nincsen ilyen buszállomás");
+        }
+        try {
+            transferIds.setShipStationId(getFinishShipLineId(settlementName));
+        } catch (NoSuchElementException e) {
+           System.out.println("Nincsen ilyen hajóállomás");
+        }
+        return transferIds; 
+    }
  
      private Integer getStartFlightId(String settlementName) {
         return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId1().getAirportId();
