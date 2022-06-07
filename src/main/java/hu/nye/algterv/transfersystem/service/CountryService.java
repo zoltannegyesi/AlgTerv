@@ -136,6 +136,7 @@ public class CountryService {
     private static List<TravelInfo> tempAllTravels = new ArrayList<>();
     private static List<List<TravelInfo>> allSuccessfullTravels = new ArrayList<>();
 
+
     private void callCheckLines(Integer id, Integer to) {
         List<BusLine> busLines = findBusLineById(id);
         List<Flight> flights = findFlightById(id);
