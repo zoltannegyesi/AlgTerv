@@ -39,15 +39,15 @@ public class CountryController {
             TransferIds fromId = this.service.getStartId(searchingData.getDeparture(), searchOptions);
             TransferIds toId = this.service.getFinishId(searchingData.getArrival(), searchOptions);
             if (fromId.isEmpty() || toId.isEmpty()) {
-                return "country/routes";
+                //return "country/routes";
             }
-            List<CountryData> result = this.service.findRoute(fromId, toId);
-            result.forEach(a->{
-                System.out.println("\n" + a.getFromCountry() + " " + a.getToCountry());
-                a.getSettlements().forEach(b->System.out.println(b.getFromSettlement().getSettlementName() + " " + b.getToSettlement().getSettlementName() + " " + b.getTransportType()));
-            });
+            this.service.getRoute(fromId, toId);
+            //result.forEach(a->{
+            //    System.out.println("\n" + a.getFromCountry() + " " + a.getToCountry());
+          //      a.getSettlements().forEach(b->System.out.println(b.getFromSettlement().getSettlementName() + " " + b.getToSettlement().getSettlementName() + " " + b.getTransportType()));
+          //  });
             //train, ship-pel nem megy
-            model.addAttribute("countryData", result);
+           // model.addAttribute("countryData", result);
         }
         return "country/routes";
     }

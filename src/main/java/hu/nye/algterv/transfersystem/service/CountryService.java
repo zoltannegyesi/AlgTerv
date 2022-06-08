@@ -2,7 +2,10 @@ package hu.nye.algterv.transfersystem.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +25,9 @@ import hu.nye.algterv.transfersystem.repository.TrainLineRepository;
 
 @Service
 public class CountryService {
-    
+
+
+    private final Logger LOGGER = LoggerFactory.getLogger(CountryService.class);
 
    private final FlightRepository flightRepository;
 
@@ -33,6 +38,13 @@ public class CountryService {
    private final ShipLineRepository shipLineRepository;
 
    private final IdFinder idFinder;
+
+   private List<List<TravelInfo>> allTransports = new ArrayList<>(); 
+
+   private List<Flight> flights = new ArrayList<>();
+   private List<BusLine> busLines = new ArrayList<>();
+   private List<TrainLine> trainLines = new ArrayList<>();
+   private List<ShipLine> shipLines = new ArrayList<>();
    
    @Autowired
    public CountryService(FlightRepository flightRepository, BusLineRepository busLineRepository, TrainLineRepository trainLineRepository, ShipLineRepository shipLineRepository, IdFinder idFinder) {
@@ -41,6 +53,10 @@ public class CountryService {
        this.trainLineRepository = trainLineRepository;
        this.shipLineRepository = shipLineRepository;
        this.idFinder = idFinder;
+       this.flights = flightRepository.findAll();
+       busLines = busLineRepository.findAll();
+       trainLines = trainLineRepository.findAll();
+       shipLines = shipLineRepository.findAll();
    }   
 
    public TransferIds getStartId(String settlementName, SearchOptions searchOptions) {
@@ -50,172 +66,109 @@ public class CountryService {
     public TransferIds getFinishId(String settlementName, SearchOptions searchOptions) {
         return this.idFinder.getFinishId(settlementName, searchOptions);
     }
- 
-    public void checkLines(TransferIds from, TransferIds to) {
-        if (from.getAirportId() != null && to.getAirportId() != null) {
-            System.out.println("r");
-            checkFlights(from.getAirportId(), to.getAirportId());
-        }
-        if (from.getTrainStationId() != null && to.getTrainStationId() != null) {
-            System.out.println("t");
-            checkTrainLines(from.getTrainStationId(), to.getTrainStationId());
-        }
-        if (from.getBusStationId() != null && to.getBusStationId() != null) {
-            System.out.println("b");
-            checkBusLines(from.getBusStationId(), to.getBusStationId());
-        }
-        if (from.getShipStationId() != null && to.getShipStationId() != null) {
-            System.out.println("h");
-            checkShipLines(from.getShipStationId(), to.getShipStationId());
-        }
+
+    public void getRoute(TransferIds from, TransferIds to) {
+        List<Flight> startFlights = getStartFlights(from.getAirportId());
+        startFlights.forEach(f->checkNext(f, to.getAirportId()));
+        List<TrainLine> startTrainLines = getStartTrainLines(from.getTrainStationId());
+        startTrainLines.forEach(f->checkNext(f, to.getTrainStationId()));
+
+        List<BusLine> startBusLines = getStartBusLines(from.getBusStationId());
+        startBusLines.forEach(f->checkNext(f, to.getBusStationId()));
+
+        List<ShipLine> startShipLines = getStartShipLines(from.getShipStationId());
+        startShipLines.forEach(f->checkNext(f, to.getShipStationId()));
+        allTransports.forEach(a->{a.forEach(b->{System.out.println(b.getFromSettlement().getSettlementName() + " " + b.getToSettlement().getSettlementName() + " " + b.getTransportType());});});
     }
 
-    public List<CountryData> findRoute(TransferIds from, TransferIds to) {
-        checkLines(from, to);
-        List<CountryData> result = new ArrayList<>();
-        List<List<TravelInfo>> infoList = allSuccessfullTravels;
-        allSuccessfullTravels = new ArrayList<>();
-        for (List<TravelInfo> tempList: infoList) {
-            TravelInfo fromInfo = tempList.get(0);
-            int transferCount = tempList.size()-1;
-            TravelInfo toInfo = tempList.get(transferCount);
-            int time = tempList.stream().mapToInt(TravelInfo::getTravelTime).sum();
-            double distance = tempList.stream().mapToDouble(TravelInfo::getTravelDistance).sum();
-            result.add(new CountryData(fromInfo, toInfo, transferCount, time, distance, tempList));
-        }
-        return result;
-    }
+    private List<TravelInfo> tempInfos = new ArrayList<>();
 
-    private void checkFlights(Integer from, Integer to) {
-        List<Flight> flights = this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getAirportId().equals(from)).toList();
-        for (Flight f : flights) {
-            checkFlight(f, to);
-        }
-    }
-
-    private void checkBusLines(Integer from, Integer to) {
-        List<BusLine> busLines = this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId1().getBusStationId().equals(from)).toList();
-        for (BusLine bus : busLines) {
-            checkBusLine(bus, to);
-        }
-    }
-
-    private void checkTrainLines(Integer from, Integer to) {
-        List<TrainLine> trainLines = this.trainLineRepository.findAll().stream().filter(train->train.getTrainStationId1().getTrainStationId().equals(from)).toList();
-        for (TrainLine train : trainLines) {
-            checkTrainLine(train, to);
-        }
-    }
-
-    private void checkShipLines(Integer from, Integer to) {
-        List<ShipLine> shipLines = this.shipLineRepository.findAll().stream().filter(ship->ship.getShipStationId1().getShipStationId().equals(from)).toList();
-        for (ShipLine ship : shipLines) {
-            checkShipLine(ship, to);
-        }
-    }
-
-    private List<Flight> findFlightById(Integer id) {
-        return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getAirportId().equals(id)).toList();
-    }
-
-    private List<BusLine> findBusLineById(Integer id) {
-        return this.busLineRepository.findAll().stream().filter(b->b.getBusStationId1().getBusStationId().equals(id)).toList();
-    }
-
-    private List<TrainLine> findTrainLineById(Integer id) {
-        return this.trainLineRepository.findAll().stream().filter(b->b.getTrainStationId1().getTrainStationId().equals(id)).toList();
-    }
-
-    private List<ShipLine> findShipLineById(Integer id) {
-        return this.shipLineRepository.findAll().stream().filter(b->b.getShipStationId1().getSettlementId().getSettlementId().equals(id)).toList();
-    }
-
-    
-
-    private static List<TravelInfo> allTravels = new ArrayList<>();
-    private static List<TravelInfo> tempAllTravels = new ArrayList<>();
-    private static List<List<TravelInfo>> allSuccessfullTravels = new ArrayList<>();
-
-
-    private void callCheckLines(Integer id, Integer to) {
-        List<BusLine> busLines = findBusLineById(id);
-        List<Flight> flights = findFlightById(id);
-        List<TrainLine> trainLines = findTrainLineById(id);
-        List<ShipLine> shipLines = findShipLineById(id);
-        if (busLines.isEmpty()) {
-            tempAllTravels = new ArrayList<>();
+    private void checkNext(Flight flight, Integer to) {
+        tempInfos.add(new TravelInfo(flight));
+        if (flight.getAirportId2().getAirportId().equals(to)) {
+            //successfully found
+            System.out.println("Successfully found airplane route");
+            List<TravelInfo> temp = new ArrayList<>();
+            tempInfos.forEach(temp::add);
+            tempInfos = new ArrayList<>();
+            allTransports.add(temp);
             return;
         } else {
-            busLines.forEach(bus->checkBusLine(bus, to));
-        }
-        if (flights.isEmpty()) {
-            tempAllTravels = new ArrayList<>();
-        } else {
-            flights.forEach(plain->checkFlight(plain, to));
-        }
-        if (trainLines.isEmpty()) {
-            tempAllTravels = new ArrayList<>();
+            List<Flight> newFlight = getStartFlights(flight.getAirportId2().getAirportId());
+            if (newFlight.isEmpty()) {
+            } else {
+                newFlight.forEach(f->checkNext(f, to));
+            }
+            
+           // checkShip(flight.getAirportId2().getSettlementId().getSettlementName(), to);
+            
+        }  
+    }
+
+    private void checkShip(String settlementName, Integer to) {
+        try {
+            Integer shipLineId = idFinder.getStartShipLineId(settlementName);
+            List<ShipLine> newShipLines = getStartShipLines(shipLineId);
+            newShipLines.forEach(f->checkNext(f, to));
+        } catch (NoSuchElementException e) {
             return;
-        } else {
-            trainLines.forEach(train->checkTrainLine(train, to));
-        }
-        if (shipLines.isEmpty()) {
-            tempAllTravels = new ArrayList<>();
-            return;
-        } else {
-            shipLines.forEach(ship->checkShipLine(ship, to));
         }
     }
 
-    private void checkBusLine(BusLine busLine, Integer to) {
-        TravelInfo travelInfo = new TravelInfo(busLine);
-        tempAllTravels.add(travelInfo);
-        if (busLine.getBusStationId2().getSettlementId().getSettlementId().equals(to)) {
-            tempAllTravels.forEach(allTravels::add);
-            allSuccessfullTravels.add(tempAllTravels);
-            tempAllTravels = new ArrayList<>();
+    private void checkTrain(String settlementName, Integer to) {
+        try {
+            Integer trainLineId = idFinder.getStartTrainLineId(settlementName);
+            List<TrainLine> newTrainLines = getStartTrainLines(trainLineId);
+            newTrainLines.forEach(f->checkNext(f, to));
+        } catch (NoSuchElementException e) {
             return;
-        } else {
-            callCheckLines(busLine.getBusStationId2().getSettlementId().getSettlementId(), to);
         }
     }
 
-    private void checkFlight(Flight flight, Integer to) {
-        TravelInfo travelInfo = new TravelInfo(flight);
-        tempAllTravels.add(travelInfo);
-        if (flight.getAirportId2().getSettlementId().getSettlementId().equals(to)) {
-            tempAllTravels.forEach(allTravels::add);
-            allSuccessfullTravels.add(tempAllTravels);
-            tempAllTravels = new ArrayList<>();
-            return;
-        } else {
-            callCheckLines(flight.getAirportId2().getSettlementId().getSettlementId(), to);
-        }
-    }
-
-    private void checkTrainLine(TrainLine trainLine, Integer to) {
-        TravelInfo travelInfo = new TravelInfo(trainLine);
-        tempAllTravels.add(travelInfo);
+    private void checkNext(TrainLine trainLine, Integer to) {
         if (trainLine.getTrainStationId2().getTrainStationId().equals(to)) {
-            tempAllTravels.forEach(allTravels::add);
-            allSuccessfullTravels.add(tempAllTravels);
-            tempAllTravels = new ArrayList<>();
-            return;
+            //successfully found
+            System.out.println("Successfully found train route");
         } else {
-            callCheckLines(trainLine.getTrainStationId2().getTrainStationId(), to);
-        }
+            List<TrainLine> newTrainLine = getStartTrainLines(trainLine.getTrainStationId2().getTrainStationId());
+            newTrainLine.forEach(f->checkNext(f, to));
+        }  
     }
 
-    private void checkShipLine(ShipLine shipLine, Integer to) {
-        TravelInfo travelInfo = new TravelInfo(shipLine);
-        tempAllTravels.add(travelInfo);
-        if (shipLine.getShipStationId2().getSettlementId().getSettlementId().equals(to)) {
-            tempAllTravels.forEach(allTravels::add);
-            allSuccessfullTravels.add(tempAllTravels);
-            tempAllTravels = new ArrayList<>();
-            return;
+    private void checkNext(BusLine busLine, Integer to) {
+        if (busLine.getBusStationId2().getBusStationId().equals(to)) {
+            //successfully found
+            System.out.println("Successfully found Bus route");
         } else {
-            callCheckLines(shipLine.getShipStationId2().getSettlementId().getSettlementId(), to);
-        }
+            List<BusLine> newBusLine = getStartBusLines(busLine.getBusStationId2().getBusStationId());
+            newBusLine.forEach(f->checkNext(f, to));
+        }  
     }
+
+    private void checkNext(ShipLine shipLine, Integer to) {
+        if (shipLine.getShipStationId2().getShipStationId().equals(to)) {
+            //successfully found
+            System.out.println("Successfully found Ship route");
+        } else {
+            List<ShipLine> newShipLine = getStartShipLines(shipLine.getShipStationId2().getShipStationId());
+            newShipLine.forEach(f->checkNext(f, to));
+        }  
+    }
+    
+    private List<Flight> getStartFlights(Integer id) {
+        return this.flights.stream().filter(f->f.getAirportId1().getAirportId().equals(id)).toList();
+    }
+
+    private List<BusLine> getStartBusLines(Integer id) {
+        return this.busLines.stream().filter(f->f.getBusStationId1().getBusStationId().equals(id)).toList();
+    }
+
+    private List<TrainLine> getStartTrainLines(Integer id) {
+        return this.trainLines.stream().filter(f->f.getTrainStationId1().getTrainStationId().equals(id)).toList();
+    }
+
+    private List<ShipLine> getStartShipLines(Integer id) {
+        return this.shipLines.stream().filter(f->f.getShipStationId1().getShipStationId().equals(id)).toList();
+    }
+
 }

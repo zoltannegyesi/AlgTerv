@@ -24,8 +24,8 @@ public class CountryRestController {
     }
 
     @GetMapping("/{id}")
-    public List<CountryData> findByAirportId(@PathVariable("id") Integer id, @RequestParam("to") Integer to) {
-        //his.service.findRoute(id, to);
+    public List<Object> findByAirportId(@PathVariable("id") Integer id, @RequestParam("to") Integer to) {
+        //return this.service.getRoute(id, to);
         return null;
     }
 }

@@ -36,22 +36,22 @@ public class IdFinder {
     try {
         transferIds.setAirportId(getStartFlightId(settlementName));
     } catch (NoSuchElementException e) {
-       System.out.println("Nincsen ilyen reptér");
+       
     }
     try {
         transferIds.setTrainStationId(getStartTrainLineId(settlementName));
     } catch (NoSuchElementException e) {
-       System.out.println("Nincsen ilyen vasútállomás");
+       
     }
     try {
         transferIds.setBusStationId(getStartBusLineId(settlementName));
     } catch (NoSuchElementException e) {
-       System.out.println("Nincsen ilyen buszállomás");
+       
     }
     try {
         transferIds.setShipStationId(getStartShipLineId(settlementName));
     } catch (NoSuchElementException e) {
-       System.out.println("Nincsen ilyen hajóállomás");
+      
     }
     return transferIds;
 }
@@ -61,55 +61,55 @@ public class IdFinder {
         try {
             transferIds.setAirportId(getFinishFlightId(settlementName));
         } catch (NoSuchElementException e) {
-           System.out.println("Nincsen ilyen reptér");
+           
         }
         try {
             transferIds.setTrainStationId(getFinishTrainLineId(settlementName));
         } catch (NoSuchElementException e) {
-           System.out.println("Nincsen ilyen vasútállomás");
+           
         }
         try {
             transferIds.setBusStationId(getFinishBusLineId(settlementName));
         } catch (NoSuchElementException e) {
-           System.out.println("Nincsen ilyen buszállomás");
+          
         }
         try {
             transferIds.setShipStationId(getFinishShipLineId(settlementName));
         } catch (NoSuchElementException e) {
-           System.out.println("Nincsen ilyen hajóállomás");
+          
         }
         return transferIds; 
     }
  
-     private Integer getStartFlightId(String settlementName) {
+     public Integer getStartFlightId(String settlementName) {
         return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId1().getAirportId();
      }
  
-     private Integer getFinishFlightId(String settlementName) {
+     public Integer getFinishFlightId(String settlementName) {
          return this.flightRepository.findAll().stream().filter(f->f.getAirportId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId2().getAirportId();
      }
  
-     private Integer getStartBusLineId(String settlementName) {
+     public Integer getStartBusLineId(String settlementName) {
          return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId1().getBusStationId();
      }
  
-     private Integer getFinishBusLineId(String settlementName) {
+     public Integer getFinishBusLineId(String settlementName) {
          return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId2().getBusStationId();
      }
  
-     private Integer getStartTrainLineId(String settlementName) {
+     public Integer getStartTrainLineId(String settlementName) {
          return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId1().getTrainStationId();
      }
  
-     private Integer getFinishTrainLineId(String settlementName) {
+     public Integer getFinishTrainLineId(String settlementName) {
          return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId2().getTrainStationId();
      }
  
-     private Integer getStartShipLineId(String settlementName) {
+     public Integer getStartShipLineId(String settlementName) {
          return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId1().getShipStationId();
      }
  
-     private Integer getFinishShipLineId(String settlementName) {
+     public Integer getFinishShipLineId(String settlementName) {
          return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId2().getShipStationId();
      }
     
