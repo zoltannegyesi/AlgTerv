@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
 import hu.nye.algterv.transfersystem.model.data.TransferIds;
+import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.repository.BusLineRepository;
 import hu.nye.algterv.transfersystem.repository.FlightRepository;
 import hu.nye.algterv.transfersystem.repository.ShipLineRepository;
@@ -31,86 +32,84 @@ public class IdFinder {
        this.shipLineRepository = shipLineRepository;
    }
 
-   public TransferIds getStartId(String settlementName, SearchOptions searchOptions) {
-    TransferIds transferIds = new TransferIds();
+   public Settlement getStartSettlement(String settlementName, SearchOptions searchOptions) {
     try {
-        transferIds.setAirportId(getStartFlightId(settlementName));
+        return getStartFlightSettlement(settlementName);
     } catch (NoSuchElementException e) {
        
     }
     try {
-        transferIds.setTrainStationId(getStartTrainLineId(settlementName));
+        return getStartTrainLineSettlement(settlementName);
     } catch (NoSuchElementException e) {
        
     }
     try {
-        transferIds.setBusStationId(getStartBusLineId(settlementName));
+        return getStartBusLineSettlement(settlementName);
     } catch (NoSuchElementException e) {
        
     }
     try {
-        transferIds.setShipStationId(getStartShipLineId(settlementName));
+        return getStartShipLineSettlement(settlementName);
     } catch (NoSuchElementException e) {
       
     }
-    return transferIds;
+    return null;
 }
  
-    public TransferIds getFinishId(String settlementName, SearchOptions searchOptions) {
-        TransferIds transferIds = new TransferIds();
+    public Settlement getFinishSettlement(String settlementName, SearchOptions searchOptions) {
         try {
-            transferIds.setAirportId(getFinishFlightId(settlementName));
+            return getFinishFlightSettlement(settlementName);
         } catch (NoSuchElementException e) {
            
         }
         try {
-            transferIds.setTrainStationId(getFinishTrainLineId(settlementName));
+            return getFinishTrainLineSettlement(settlementName);
         } catch (NoSuchElementException e) {
            
         }
         try {
-            transferIds.setBusStationId(getFinishBusLineId(settlementName));
+            return getFinishBusLineSettlement(settlementName);
         } catch (NoSuchElementException e) {
           
         }
         try {
-            transferIds.setShipStationId(getFinishShipLineId(settlementName));
+            return getFinishShipLineSettlement(settlementName);
         } catch (NoSuchElementException e) {
           
         }
-        return transferIds; 
+        return null; 
     }
  
-     public Integer getStartFlightId(String settlementName) {
-        return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId1().getAirportId();
+     public Settlement getStartFlightSettlement(String settlementName) {
+        return this.flightRepository.findAll().stream().filter(f->f.getAirportId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId1().getSettlementId();
      }
  
-     public Integer getFinishFlightId(String settlementName) {
-         return this.flightRepository.findAll().stream().filter(f->f.getAirportId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId2().getAirportId();
+     public Settlement getFinishFlightSettlement(String settlementName) {
+         return this.flightRepository.findAll().stream().filter(f->f.getAirportId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getAirportId2().getSettlementId();
      }
  
-     public Integer getStartBusLineId(String settlementName) {
-         return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId1().getBusStationId();
+     public Settlement getStartBusLineSettlement(String settlementName) {
+         return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId1().getSettlementId();
      }
  
-     public Integer getFinishBusLineId(String settlementName) {
-         return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId2().getBusStationId();
+     public Settlement getFinishBusLineSettlement(String settlementName) {
+         return this.busLineRepository.findAll().stream().filter(bus->bus.getBusStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getBusStationId2().getSettlementId();
      }
  
-     public Integer getStartTrainLineId(String settlementName) {
-         return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId1().getTrainStationId();
+     public Settlement getStartTrainLineSettlement(String settlementName) {
+         return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId1().getSettlementId();
      }
  
-     public Integer getFinishTrainLineId(String settlementName) {
-         return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId2().getTrainStationId();
+     public Settlement getFinishTrainLineSettlement(String settlementName) {
+         return this.trainLineRepository.findAll().stream().filter(Train->Train.getTrainStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getTrainStationId2().getSettlementId();
      }
  
-     public Integer getStartShipLineId(String settlementName) {
-         return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId1().getShipStationId();
+     public Settlement getStartShipLineSettlement(String settlementName) {
+         return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId1().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId1().getSettlementId();
      }
  
-     public Integer getFinishShipLineId(String settlementName) {
-         return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId2().getShipStationId();
+     public Settlement getFinishShipLineSettlement(String settlementName) {
+         return this.shipLineRepository.findAll().stream().filter(Ship->Ship.getShipStationId2().getSettlementId().getSettlementName().equals(settlementName)).findFirst().orElseThrow().getShipStationId2().getSettlementId();
      }
     
 }
