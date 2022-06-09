@@ -3,7 +3,10 @@ package hu.nye.algterv.transfersystem.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +64,7 @@ public class CountryService {
         trainLineRepository.findAll().forEach(t->loadedTravelInfos.add(new TravelInfo(t)));
     }
     if (searchOptions.getIsShip()) {
-        shipLineRepository.findAll().forEach(s->loadedTravelInfos.add(new TravelInfo(s)));
+        shipLineRepository.findAll().forEach(s-> loadedTravelInfos.add(new TravelInfo(s)));
     }
    }
 
@@ -75,29 +78,44 @@ public class CountryService {
 
     private Double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
-    
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
+    public List<TravelInfo> getTravelInfosById(Integer id) {
+        return cityDatas.stream().filter(cityData->cityData.getId().equals(id)).findFirst().orElseThrow().getTravels();
+    }
+
+    private List<CityData> cityDatas = new ArrayList<>();
 
     public List<CityData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
         loadTravelInfos(searchOptions);
+        cityDatas = new ArrayList<>();
         List<TravelInfo> startTravelInfos = getStartTravelInfos(from);
+        System.out.println(startTravelInfos.toString());
         startTravelInfos.forEach(t->checkNext(t, to, from));
         List<TravelInfo> allResults = getAllTravelInfos();
         allTransports = new ArrayList<>();
         sortTransports(from, to, allResults);
+        
         List<CityData> result = new ArrayList<>();
+        AtomicInteger index = new AtomicInteger(0);
         allTransports.forEach(transport->{
             TravelInfo fromInfo = transport.get(0);
             int transferCount = transport.size()-1;
             TravelInfo toInfo = transport.get(transferCount);
             Integer time = transport.stream().mapToInt(TravelInfo::getTravelTime).sum();
             Double distance = round(transport.stream().mapToDouble(TravelInfo::getTravelDistance).sum(), 2);
-            result.add(new CityData(fromInfo, toInfo, transferCount, time, distance, transport));
+            CityData cityData = new CityData(index.incrementAndGet(), fromInfo, toInfo, transferCount, time, distance, transport);
+            result.add(cityData);
         });
+        Collections.sort(result, new Comparator<CityData>() {
+            public int compare(CityData c1, CityData c2) {
+                return c1.getTime().compareTo(c2.getTime());
+            }
+        });
+        cityDatas.addAll(result);
         return result;
     }
 

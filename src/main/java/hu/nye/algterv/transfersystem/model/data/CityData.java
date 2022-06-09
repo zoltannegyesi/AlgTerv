@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CityData {
     
-    private static int staticId = 0;
-    private int id;
+    private Integer id;
     private String fromCity;
     private String toCity;
     private Integer transferCount;
@@ -21,9 +20,8 @@ public class CityData {
     private Double distance;
     private List<TravelInfo> travels;
 
-    public CityData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
-        staticId++;
-        id = staticId;
+    public CityData(Integer id, TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
+        this.id = id;
         this.fromCity = from.getFromSettlement().getSettlementName();
         this.toCity = to.getToSettlement().getSettlementName();
         this.transferCount = transferCount;

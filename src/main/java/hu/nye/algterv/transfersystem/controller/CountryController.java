@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,11 +42,11 @@ public class CountryController {
         if (searchOptions.isNotEmpty()) {
             Settlement from = this.service.getStartId(searchingData.getDeparture());
             Settlement to = this.service.getFinishId(searchingData.getArrival());
-            if (from == null|| to == null) {
-                return "country/routes";
+            if (from == null || to == null) {
+                return "country/index";
             }
-            List<CityData> result = this.service.getRoute(from, to, searchOptions);
-            model.addAttribute("cityData", result);
+                List<CityData> result = this.service.getRoute(from, to, searchOptions);
+                model.addAttribute("cityData", result);
         }
         return "country/routes";
     }
@@ -55,10 +56,13 @@ public class CountryController {
         return "country/routes";
     }
 
-    @PostMapping(value = "/route")
-    public String getRoute(Model model, @RequestParam(name="id", required=false) Integer id) {
-        System.out.println(id);
-        //model.addAttribute("travels", travelInfos);
+    @GetMapping(value = "/route")
+    public String getRoute(Model model, @ModelAttribute CityData cityData) {
+        if (cityData == null) {
+            return "country/routes";
+        }
+        List<TravelInfo> result = this.service.getTravelInfosById(cityData.getId());
+        model.addAttribute("travelInfos", result);
         return "country/route";
     }
 }
