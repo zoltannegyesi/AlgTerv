@@ -1,6 +1,8 @@
 package hu.nye.algterv.transfersystem.model.data;
 
-import hu.nye.algterv.transfersystem.model.plane.Flight;
+import java.util.List;
+
+import hu.nye.algterv.transfersystem.model.TravelInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +17,14 @@ public class CountryData {
     private Integer transferCount;
     private Integer time;
     private Double distance;
+    private List<TravelInfo> travels;
 
-    public CountryData(Flight from, Flight to, Integer transferCount, Integer time, Double distance) {
-        this.fromCountry = from.getAirportId1().getSettlementId().getCountryId().getCountryName();
-        this.toCountry = to.getAirportId2().getSettlementId().getCountryId().getCountryName();
+    public CountryData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
+        this.fromCountry = from.getFromSettlement().getSettlementName();
+        this.toCountry = to.getToSettlement().getSettlementName();
         this.transferCount = transferCount;
         this.time = time;
         this.distance = distance;
+        this.travels = travels;
     }
 }

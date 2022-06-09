@@ -1,7 +1,5 @@
 package hu.nye.algterv.transfersystem.model.train;
 
-import java.time.LocalTime;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -35,5 +33,5 @@ public class TrainLine {
 
     private Double travelDistance;
 
-    private LocalTime travelTime;
+    private Integer travelTime;
 }
