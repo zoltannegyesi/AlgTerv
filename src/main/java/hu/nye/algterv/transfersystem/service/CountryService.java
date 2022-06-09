@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hu.nye.algterv.transfersystem.model.TravelInfo;
-import hu.nye.algterv.transfersystem.model.data.CountryData;
+import hu.nye.algterv.transfersystem.model.data.CityData;
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
 import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.repository.BusLineRepository;
@@ -82,21 +82,21 @@ public class CountryService {
     }
 
 
-    public List<CountryData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
+    public List<CityData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
         loadTravelInfos(searchOptions);
         List<TravelInfo> startTravelInfos = getStartTravelInfos(from);
         startTravelInfos.forEach(t->checkNext(t, to, from));
         List<TravelInfo> allResults = getAllTravelInfos();
         allTransports = new ArrayList<>();
         sortTransports(from, to, allResults);
-        List<CountryData> result = new ArrayList<>();
+        List<CityData> result = new ArrayList<>();
         allTransports.forEach(transport->{
             TravelInfo fromInfo = transport.get(0);
             int transferCount = transport.size()-1;
             TravelInfo toInfo = transport.get(transferCount);
             Integer time = transport.stream().mapToInt(TravelInfo::getTravelTime).sum();
             Double distance = round(transport.stream().mapToDouble(TravelInfo::getTravelDistance).sum(), 2);
-            result.add(new CountryData(fromInfo, toInfo, transferCount, time, distance, transport));
+            result.add(new CityData(fromInfo, toInfo, transferCount, time, distance, transport));
         });
         return result;
     }
