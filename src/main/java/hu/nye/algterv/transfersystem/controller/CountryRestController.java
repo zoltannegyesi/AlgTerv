@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import hu.nye.algterv.transfersystem.model.data.CountryData;
 import hu.nye.algterv.transfersystem.service.CountryService;
 
 @RestController

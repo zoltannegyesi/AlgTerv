@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import hu.nye.algterv.transfersystem.model.SearchingData;
 import hu.nye.algterv.transfersystem.model.data.CountryData;
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
-import hu.nye.algterv.transfersystem.model.data.TransferIds;
 import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.service.CountryService;
 
@@ -37,18 +36,13 @@ public class CountryController {
     public String findRoutes(@ModelAttribute("searchingData") SearchingData searchingData, Model model) {
         SearchOptions searchOptions = new SearchOptions(searchingData);
         if (searchOptions.isNotEmpty()) {
-            Settlement from = this.service.getStartId(searchingData.getDeparture(), searchOptions);
-            Settlement to = this.service.getFinishId(searchingData.getArrival(), searchOptions);
+            Settlement from = this.service.getStartId(searchingData.getDeparture());
+            Settlement to = this.service.getFinishId(searchingData.getArrival());
             if (from == null|| to == null) {
                 return "country/routes";
             }
-            this.service.getRoute(from, to);
-            //result.forEach(a->{
-            //    System.out.println("\n" + a.getFromCountry() + " " + a.getToCountry());
-          //      a.getSettlements().forEach(b->System.out.println(b.getFromSettlement().getSettlementName() + " " + b.getToSettlement().getSettlementName() + " " + b.getTransportType()));
-          //  });
-            //train, ship-pel nem megy
-           // model.addAttribute("countryData", result);
+            List<CountryData> result = this.service.getRoute(from, to, searchOptions);
+            model.addAttribute("countryData", result);
         }
         return "country/routes";
     }

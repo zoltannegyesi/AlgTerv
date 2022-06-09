@@ -5,8 +5,6 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import hu.nye.algterv.transfersystem.model.data.SearchOptions;
-import hu.nye.algterv.transfersystem.model.data.TransferIds;
 import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.repository.BusLineRepository;
 import hu.nye.algterv.transfersystem.repository.FlightRepository;
@@ -32,7 +30,7 @@ public class IdFinder {
        this.shipLineRepository = shipLineRepository;
    }
 
-   public Settlement getStartSettlement(String settlementName, SearchOptions searchOptions) {
+   public Settlement getStartSettlement(String settlementName) {
     try {
         return getStartFlightSettlement(settlementName);
     } catch (NoSuchElementException e) {
@@ -56,7 +54,7 @@ public class IdFinder {
     return null;
 }
  
-    public Settlement getFinishSettlement(String settlementName, SearchOptions searchOptions) {
+    public Settlement getFinishSettlement(String settlementName) {
         try {
             return getFinishFlightSettlement(settlementName);
         } catch (NoSuchElementException e) {

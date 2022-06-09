@@ -17,14 +17,14 @@ public class CountryData {
     private Integer transferCount;
     private Integer time;
     private Double distance;
-    private List<TravelInfo> settlements;
+    private List<TravelInfo> travels;
 
-    public CountryData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> settlements) {
+    public CountryData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
         this.fromCountry = from.getFromSettlement().getSettlementName();
         this.toCountry = to.getToSettlement().getSettlementName();
         this.transferCount = transferCount;
         this.time = time;
         this.distance = distance;
-        this.settlements = settlements;
+        this.travels = travels;
     }
 }
