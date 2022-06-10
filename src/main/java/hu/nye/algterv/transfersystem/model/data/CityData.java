@@ -10,18 +10,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CountryData {
+public class CityData {
     
-    private String fromCountry;
-    private String toCountry;
+    private Integer id;
+    private String fromCity;
+    private String toCity;
     private Integer transferCount;
     private Integer time;
     private Double distance;
     private List<TravelInfo> travels;
 
-    public CountryData(TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
-        this.fromCountry = from.getFromSettlement().getSettlementName();
-        this.toCountry = to.getToSettlement().getSettlementName();
+    public CityData(Integer id, TravelInfo from, TravelInfo to, Integer transferCount, Integer time, Double distance, List<TravelInfo> travels) {
+        this.id = id;
+        this.fromCity = from.getFromSettlement().getSettlementName();
+        this.toCity = to.getToSettlement().getSettlementName();
         this.transferCount = transferCount;
         this.time = time;
         this.distance = distance;

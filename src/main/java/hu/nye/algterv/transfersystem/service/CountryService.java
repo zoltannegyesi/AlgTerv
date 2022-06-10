@@ -3,7 +3,10 @@ package hu.nye.algterv.transfersystem.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import hu.nye.algterv.transfersystem.model.TravelInfo;
-import hu.nye.algterv.transfersystem.model.data.CountryData;
+import hu.nye.algterv.transfersystem.model.data.CityData;
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
 import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.repository.BusLineRepository;
@@ -61,7 +64,7 @@ public class CountryService {
         trainLineRepository.findAll().forEach(t->loadedTravelInfos.add(new TravelInfo(t)));
     }
     if (searchOptions.getIsShip()) {
-        shipLineRepository.findAll().forEach(s->loadedTravelInfos.add(new TravelInfo(s)));
+        shipLineRepository.findAll().forEach(s-> loadedTravelInfos.add(new TravelInfo(s)));
     }
    }
 
@@ -75,29 +78,43 @@ public class CountryService {
 
     private Double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
-    
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
+    public List<TravelInfo> getTravelInfosById(Integer id) {
+        return cityDatas.stream().filter(cityData->cityData.getId().equals(id)).findFirst().orElseThrow().getTravels();
+    }
 
-    public List<CountryData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
+    private List<CityData> cityDatas = new ArrayList<>();
+
+    public List<CityData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
         loadTravelInfos(searchOptions);
-        List<TravelInfo> startTravelInfos = getStartTravelInfos(from);
+        cityDatas = new ArrayList<>();
+        tempInfos = new ArrayList<>();
+        List<TravelInfo> startTravelInfos = getStartTravelInfos(from, new ArrayList<>());
         startTravelInfos.forEach(t->checkNext(t, to, from));
         List<TravelInfo> allResults = getAllTravelInfos();
         allTransports = new ArrayList<>();
         sortTransports(from, to, allResults);
-        List<CountryData> result = new ArrayList<>();
+        List<CityData> result = new ArrayList<>();
+        AtomicInteger index = new AtomicInteger(0);
         allTransports.forEach(transport->{
             TravelInfo fromInfo = transport.get(0);
             int transferCount = transport.size()-1;
             TravelInfo toInfo = transport.get(transferCount);
             Integer time = transport.stream().mapToInt(TravelInfo::getTravelTime).sum();
             Double distance = round(transport.stream().mapToDouble(TravelInfo::getTravelDistance).sum(), 2);
-            result.add(new CountryData(fromInfo, toInfo, transferCount, time, distance, transport));
+            CityData cityData = new CityData(index.incrementAndGet(), fromInfo, toInfo, transferCount, time, distance, transport);
+            result.add(cityData);
         });
+        Collections.sort(result, new Comparator<CityData>() {
+            public int compare(CityData c1, CityData c2) {
+                return c1.getTime().compareTo(c2.getTime());
+            }
+        });
+        cityDatas.addAll(result);
         return result;
     }
 
@@ -168,17 +185,15 @@ public class CountryService {
                 tempInfos = new ArrayList<>();
             return;
         } else {
-            List<TravelInfo> newTravelInfo = getStartTravelInfos(travelInfo.getToSettlement());
+            List<TravelInfo> newTravelInfo = getStartTravelInfos(travelInfo.getToSettlement(), tempInfos);
             if (!newTravelInfo.isEmpty()) {
                 newTravelInfo.forEach(f->checkNext(f, to, from));
             }            
         }  
     }
 
-    private List<TravelInfo> getStartTravelInfos(Settlement settlement) {
-        return this.loadedTravelInfos.stream().filter(f-> {
-           return f.getFromSettlement().getSettlementId().equals(settlement.getSettlementId());
-        }).toList();
+    private List<TravelInfo> getStartTravelInfos(Settlement settlement, List<TravelInfo> tempInfos) {
+        return this.loadedTravelInfos.stream().filter(f-> f.getFromSettlement().getSettlementId().equals(settlement.getSettlementId()) && !tempInfos.contains(f)).toList();
     }
 
 }

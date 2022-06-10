@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import hu.nye.algterv.transfersystem.model.SearchingData;
-import hu.nye.algterv.transfersystem.model.data.CountryData;
+import hu.nye.algterv.transfersystem.model.TravelInfo;
+import hu.nye.algterv.transfersystem.model.data.CityData;
 import hu.nye.algterv.transfersystem.model.data.SearchOptions;
 import hu.nye.algterv.transfersystem.model.region.Settlement;
 import hu.nye.algterv.transfersystem.service.CountryService;
@@ -38,17 +39,27 @@ public class CountryController {
         if (searchOptions.isNotEmpty()) {
             Settlement from = this.service.getStartId(searchingData.getDeparture());
             Settlement to = this.service.getFinishId(searchingData.getArrival());
-            if (from == null|| to == null) {
+            if (from == null || to == null) {
                 return "country/routes";
             }
-            List<CountryData> result = this.service.getRoute(from, to, searchOptions);
-            model.addAttribute("countryData", result);
+                List<CityData> result = this.service.getRoute(from, to, searchOptions);
+                model.addAttribute("cityData", result);
         }
         return "country/routes";
     }
 
     @GetMapping(value = "/list")
-    public String findAll(Model model, @ModelAttribute("countryData") CountryData countryData) {
+    public String findAll(Model model, @ModelAttribute("cityData") CityData cityData) {
         return "country/routes";
+    }
+
+    @GetMapping(value = "/route")
+    public String getRoute(Model model, @ModelAttribute CityData cityData) {
+        if (cityData == null) {
+            return "country/routes";
+        }
+        List<TravelInfo> result = this.service.getTravelInfosById(cityData.getId());
+        model.addAttribute("travelInfos", result);
+        return "country/route";
     }
 }
