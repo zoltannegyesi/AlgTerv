@@ -43,7 +43,7 @@ public class CountryController {
             Settlement from = this.service.getStartId(searchingData.getDeparture());
             Settlement to = this.service.getFinishId(searchingData.getArrival());
             if (from == null || to == null) {
-                return "country/index";
+                return "country/routes";
             }
                 List<CityData> result = this.service.getRoute(from, to, searchOptions);
                 model.addAttribute("cityData", result);

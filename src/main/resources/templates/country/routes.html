@@ -16,7 +16,7 @@
 			<button type="button" class="btn btn-dark btn-lg btn-block" style="margin-bottom: 1%;" onclick="history.go(-1)">Új keresés</button>
 			<div class="alert alert-secondary">
 				<h2 class="user-select-none">
-						<span th:text="${cityData != null} ? ${cityData[0].fromCity} + '-' : ' '"></span><span th:text="${cityData != null} ? ${cityData[0].toCity} : ' '"></span>
+						<span th:text="${cityData != null and !cityData.empty} ? ${cityData[0].fromCity} + '-' : ' '"></span><span th:text="${cityData != null and !cityData.empty} ? ${cityData[0].toCity} : ' '"></span>
 				</h2>
 				<table class="table table-borderless">
 					<thead class="user-select-none">

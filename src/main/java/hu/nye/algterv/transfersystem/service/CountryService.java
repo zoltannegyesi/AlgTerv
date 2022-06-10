@@ -92,13 +92,13 @@ public class CountryService {
     public List<CityData> getRoute(Settlement from, Settlement to, SearchOptions searchOptions) {
         loadTravelInfos(searchOptions);
         cityDatas = new ArrayList<>();
-        List<TravelInfo> startTravelInfos = getStartTravelInfos(from);
-        System.out.println(startTravelInfos.toString());
+        tempInfos = new ArrayList<>();
+        List<TravelInfo> startTravelInfos = getStartTravelInfos(from, new ArrayList<>());
         startTravelInfos.forEach(t->checkNext(t, to, from));
         List<TravelInfo> allResults = getAllTravelInfos();
+        startTravelInfos.forEach(a->System.out.println(a.getTransportType() + " " + a.getFromSettlement().getSettlementName() + " " + a.getToSettlement().getSettlementName()));
         allTransports = new ArrayList<>();
         sortTransports(from, to, allResults);
-        
         List<CityData> result = new ArrayList<>();
         AtomicInteger index = new AtomicInteger(0);
         allTransports.forEach(transport->{
@@ -186,17 +186,15 @@ public class CountryService {
                 tempInfos = new ArrayList<>();
             return;
         } else {
-            List<TravelInfo> newTravelInfo = getStartTravelInfos(travelInfo.getToSettlement());
+            List<TravelInfo> newTravelInfo = getStartTravelInfos(travelInfo.getToSettlement(), tempInfos);
             if (!newTravelInfo.isEmpty()) {
                 newTravelInfo.forEach(f->checkNext(f, to, from));
             }            
         }  
     }
 
-    private List<TravelInfo> getStartTravelInfos(Settlement settlement) {
-        return this.loadedTravelInfos.stream().filter(f-> {
-           return f.getFromSettlement().getSettlementId().equals(settlement.getSettlementId());
-        }).toList();
+    private List<TravelInfo> getStartTravelInfos(Settlement settlement, List<TravelInfo> tempInfos) {
+        return this.loadedTravelInfos.stream().filter(f-> f.getFromSettlement().getSettlementId().equals(settlement.getSettlementId()) && !tempInfos.contains(f)).toList();
     }
 
 }
