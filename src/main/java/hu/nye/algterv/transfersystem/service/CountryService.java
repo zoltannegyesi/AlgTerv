@@ -96,7 +96,6 @@ public class CountryService {
         List<TravelInfo> startTravelInfos = getStartTravelInfos(from, new ArrayList<>());
         startTravelInfos.forEach(t->checkNext(t, to, from));
         List<TravelInfo> allResults = getAllTravelInfos();
-        startTravelInfos.forEach(a->System.out.println(a.getTransportType() + " " + a.getFromSettlement().getSettlementName() + " " + a.getToSettlement().getSettlementName()));
         allTransports = new ArrayList<>();
         sortTransports(from, to, allResults);
         List<CityData> result = new ArrayList<>();

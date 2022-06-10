@@ -24,6 +24,7 @@
 							<th>Indulási pont (város)</th>
 							<th>Érkezési pont (város)</th>
 							<th>Átszállások száma</th>
+							<th>Utazási idő (perc)</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -39,6 +40,7 @@
 										<td th:name="fromCity" th:text="${cd.fromCity}"   th:value="${cd.fromCity}"></td>
 										<td th:name="toCity" th:text="${cd.toCity}"   th:value="${cd.toCity}"></td>				
 										<td th:name="transferCount" th:text="${cd.transferCount}"   th:value="${cd.transferCount}"></td>
+										<td th:name="time" th:text="${cd.time}"   th:value="${cd.time}"></td>
 										<td><button class="btn btn-primary" th:onclick="|window.location.href='/routes/route'|">választ</button></td>
 									</form>	
 							</tr>
