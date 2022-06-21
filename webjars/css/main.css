@@ -1,0 +1,27 @@
+body 
+{
+    background-image: url('../../img/pattern.png');
+    background-repeat: repeat;
+}
+
+#indexsubmit
+{
+    margin-top:1%;
+}
+
+#container1
+{
+    margin-top:5%;
+    margin-bottom:5%;
+}
+
+#container2
+{
+    margin-top:8%;
+    margin-bottom:5%;
+}
+
+#newsearch
+{
+    margin-bottom: 1%;
+}
